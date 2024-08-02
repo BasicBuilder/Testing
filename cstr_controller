@@ -1,0 +1,1227 @@
+import 'package:english_words/english_words.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+  runApp(CSTRControllerApp());
+}
+
+class CSTRControllerApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'CSTR Controller',
+      theme: ThemeData(
+        brightness: Brightness.dark, // Set the theme brightness to dark
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: MainScreen(),
+    );
+  }
+}
+
+class MainScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text('CSTR Controller'),
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue, size: 30), // WiFi connection status
+          SizedBox(width: 10), // Add space between icons
+          Icon(Icons.bluetooth, color: Colors.blue, size: 30), // Bluetooth connection status
+          SizedBox(width: 10), // Add space between icons
+          Icon(Icons.cloud, color: Colors.white, size: 30), // Server connection status
+          SizedBox(width: 10), // Add space between icons
+          IconButton(
+            icon: Icon(Icons.menu, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainMenuScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Image.asset('assets/bgs_logo_nobkg.jpg', height: 100), // Display the image
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 4, // Make the tiles square
+                children: [
+                  DataTile(
+                    label: 'pH',
+                    value: '7.00',
+                    unit: '',
+                    color: Colors.orange,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingsScreen(
+                          title: 'pH Settings',
+                          parameters: {
+                            'Setpoint': '7.20',
+                            'High Limit': '8.00',
+                            'Low Limit': '6.50',
+                          },
+                          inputRange: {
+                            'Setpoint': [0, 14],
+                            'High Limit': [0, 14],
+                            'Low Limit': [0, 14],
+                          },
+                          unitPreference: null,
+                          showCalibrate: true,
+                        )),
+                      );
+                    },
+                  ),
+                  DataTile(
+                    label: 'ORP',
+                    value: '120.4',
+                    unit: 'mV',
+                    color: Colors.grey,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingsScreen(
+                          title: 'ORP Settings',
+                          parameters: {
+                            'Setpoint': '120.4',
+                            'High Limit': '150.0',
+                            'Low Limit': '90.0',
+                          },
+                          inputRange: {
+                            'Setpoint': [-500, 500],
+                            'High Limit': [-500, 500],
+                            'Low Limit': [-500, 500],
+                          },
+                          unitPreference: null,
+                          showCalibrate: true,
+                        )),
+                      );
+                    },
+                  ),
+                  DataTile(
+                    label: 'Temperature',
+                    value: '86.3',
+                    unit: '°F',
+                    color: Colors.yellow,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingsScreen(
+                          title: 'Temperature Settings',
+                          parameters: {
+                            'Setpoint': '86.3',
+                            'High Limit': '90.0',
+                            'Low Limit': '80.0',
+                          },
+                          inputRange: {
+                            'Setpoint': [0, 100],
+                            'High Limit': [0, 100],
+                            'Low Limit': [0, 100],
+                          },
+                          unitPreference: UnitPreference(
+                            label: 'Temperature Unit',
+                            options: ['Celsius', 'Fahrenheit'],
+                            selectedOption: 'Fahrenheit',
+                          ),
+                          showCalibrate: true,
+                        )),
+                      );
+                    },
+                  ),
+                  DataTile(
+                    label: 'Feed',
+                    value: '14.2',
+                    unit: 'mL/min',
+                    color: Colors.blue,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingsScreen(
+                          title: 'Feed Settings',
+                          parameters: {
+                            'Setpoint': '14.2',
+                            'High Limit': '20.0',
+                            'Low Limit': '10.0',
+                          },
+                          inputRange: null,
+                          unitPreference: UnitPreference(
+                            label: 'Feed Unit',
+                            options: ['mL/min', 'mL/hr', 'mL/d', 'L/h', 'L/d', 'm3/h', 'm3/d', 'gal/h', 'gal/d', 'ft3/min'],
+                            selectedOption: 'mL/min',
+                          ),
+                          showCalibrate: true,
+                        )),
+                      );
+                    },
+                  ),
+                  DataTile(
+                    label: 'CH4',
+                    value: '1.03',
+                    unit: 'mL/min',
+                    color: Colors.green,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingsScreen(
+                          title: 'CH4 Settings',
+                          parameters: {
+                            'Setpoint': '1.03',
+                            'High Limit': '1.50',
+                            'Low Limit': '0.50',
+                          },
+                          inputRange: null,
+                          unitPreference: UnitPreference(
+                            label: 'CH4 Unit',
+                            options: ['mL/min', 'mL/hr', 'mL/d', 'L/h', 'L/d', 'ft3/min', 'ft3/hr', 'ft3/d'],
+                            selectedOption: 'mL/min',
+                          ),
+                          showCalibrate: false,
+                        )),
+                      );
+                    },
+                  ),
+                  DataTile(
+                    label: 'Mixer Speed',
+                    value: '138',
+                    unit: 'rpm',
+                    color: Colors.orange,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SettingsScreen(
+                          title: 'Mixer Speed Settings',
+                          parameters: {
+                            'Setpoint': '138',
+                            'High Limit': '200',
+                            'Low Limit': '100',
+                          },
+                          inputRange: {
+                            'Setpoint': [0, 300],
+                            'High Limit': [0, 300],
+                            'Low Limit': [0, 300],
+                          },
+                          unitPreference: null,
+                          showCalibrate: false,
+                        )),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DataTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final String unit;
+  final Color color;
+  final VoidCallback onTap;
+
+  DataTile({required this.label, required this.value, required this.unit, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 8,
+              left: 8,
+              child: Text(
+                label,
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+            Center(
+              child: Text(
+                value,
+                style: TextStyle(fontSize: 28, color: Colors.white),
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: Text(
+                unit,
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MainMenuScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text('Menu'),
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue), // WiFi connection status
+          Icon(Icons.bluetooth, color: Colors.blue), // Bluetooth connection status
+          Icon(Icons.cloud, color: Colors.white), // Server connection status
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            MenuButton(
+              label: 'App Settings',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AppSettingsScreen()),
+                );
+              },
+            ),
+            MenuButton(
+              label: 'Calibration Records',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CalibrationRecordsScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MenuButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  MenuButton({required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(double.infinity, 50),
+        ),
+        onPressed: onPressed,
+        child: Text(label),
+      ),
+    );
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  final String title;
+  final Map<String, String> parameters;
+  final Map<String, List<int>>? inputRange;
+  final UnitPreference? unitPreference;
+  final bool showCalibrate;
+
+  SettingsScreen({
+    required this.title,
+    required this.parameters,
+    this.inputRange,
+    this.unitPreference,
+    required this.showCalibrate,
+  });
+
+  void _showCalibrateDialog(BuildContext context, String type) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        if (type == 'pH') {
+          return _phCalibrateDialog(context);
+        } else if (type == 'ORP') {
+          return _orpCalibrateDialog(context);
+        } else if (type == 'Temperature') {
+          return _temperatureCalibrateDialog(context);
+        } else if (type == 'Feed') {
+          return _feedCalibrateDialog(context);
+        }
+        return SizedBox.shrink();
+      },
+    );
+  }
+
+  AlertDialog _phCalibrateDialog(BuildContext context) {
+    return AlertDialog(
+      title: Text('Calibrate pH'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _showInputValueDialog(context, 'pH 4');
+            },
+            child: Text('pH 4'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _showInputValueDialog(context, 'pH 7');
+            },
+            child: Text('pH 7'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _showInputValueDialog(context, 'pH 10');
+            },
+            child: Text('pH 10'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+      ],
+    );
+  }
+
+  AlertDialog _orpCalibrateDialog(BuildContext context) {
+    return AlertDialog(
+      title: Text('Calibrate ORP'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'Enter concentration (mV)'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            _showInputValueDialog(context, 'ORP Reading');
+          },
+          child: Text('Continue'),
+        ),
+      ],
+    );
+  }
+
+  AlertDialog _temperatureCalibrateDialog(BuildContext context) {
+    return AlertDialog(
+      title: Text('Calibrate Temperature'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'Temperature 1'),
+          ),
+          TextField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'Temperature 2'),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Continue'),
+        ),
+      ],
+    );
+  }
+
+  AlertDialog _feedCalibrateDialog(BuildContext context) {
+    return AlertDialog(
+      title: Text('Calibrate Feed'),
+      content: TextField(
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(hintText: 'Enter calibration volume (mL)'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            _showFeedInputValueDialog(context, 'Measured volume (mL)');
+          },
+          child: Text('Continue'),
+        ),
+      ],
+    );
+  }
+
+  void _showFeedInputValueDialog(BuildContext context, String title) {
+    String selectedUnit = 'seconds';
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(hintText: 'Enter measured volume (mL)'),
+              ),
+              TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(hintText: 'Enter time passed'),
+              ),
+              DropdownButton<String>(
+                value: selectedUnit,
+                items: ['seconds', 'minutes'].map((String unit) {
+                  return DropdownMenuItem<String>(
+                    value: unit,
+                    child: Text(unit),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    selectedUnit = newValue;
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showInputValueDialog(BuildContext context, String title) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: 'Enter value'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text(title),
+        centerTitle: true, // Center the title
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue), // WiFi connection status
+          Icon(Icons.bluetooth, color: Colors.blue), // Bluetooth connection status
+          Icon(Icons.cloud, color: Colors.white), // Server connection status
+          IconButton(
+            icon: Icon(Icons.menu, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainMenuScreen()),
+              );
+            },
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.home, size: 30),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 4, // Make the tiles square
+                children: [
+                  ...parameters.keys.map((key) {
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            String newValue = parameters[key]!;
+                            return AlertDialog(
+                              title: Text('Change $key'),
+                              content: TextField(
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  newValue = value;
+                                },
+                                decoration: InputDecoration(hintText: 'Enter new value'),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // Handle the new value here (e.g., update state, send to server)
+                                    if (inputRange != null && inputRange!.containsKey(key)) {
+                                      int? intValue = int.tryParse(newValue);
+                                      if (intValue != null && intValue >= inputRange![key]![0] && intValue <= inputRange![key]![1]) {
+                                        // Valid range, proceed
+                                        parameters[key] = newValue;
+                                        Navigator.of(context).pop();
+                                      } else {
+                                        // Invalid range, show error
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Text('Invalid Input'),
+                                            content: Text('Value must be between ${inputRange![key]![0]} and ${inputRange![key]![1]}'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('OK'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      // No range specified, just update
+                                      parameters[key] = newValue;
+                                      Navigator.of(context).pop();
+                                    }
+                                  },
+                                  child: Text('Continue'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              top: 8,
+                              left: 8,
+                              child: Text(
+                                key,
+                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                parameters[key]!,
+                                style: TextStyle(fontSize: 28, color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  if (unitPreference != null) unitPreference!,
+                ],
+              ),
+            ),
+            if (showCalibrate)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                  ),
+                  onPressed: () {
+                    _showCalibrateDialog(context, title.split(' ')[0]);
+                  },
+                  child: Text('Calibrate'),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AppSettingsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text('App Settings'),
+        centerTitle: true, // Center the title
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue), // WiFi connection status
+          Icon(Icons.bluetooth, color: Colors.blue), // Bluetooth connection status
+          Icon(Icons.cloud, color: Colors.white), // Server connection status
+          IconButton(
+            icon: Icon(Icons.menu, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainMenuScreen()),
+              );
+            },
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.home, size: 30),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SettingsButton(
+              label: 'Connect to WiFi',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WifiSettingsScreen()),
+                );
+              },
+            ),
+            SettingsButton(
+              label: 'Connect to Bluetooth',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BluetoothSettingsScreen()),
+                );
+              },
+            ),
+            SettingsButton(
+              label: 'Set Data Logging Frequency',
+              onPressed: () {
+                // Implement data logging frequency logic here
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    String frequency = '5'; // Default frequency value
+                    return AlertDialog(
+                      title: Text('Set Data Logging Frequency'),
+                      content: TextField(
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          frequency = value;
+                        },
+                        decoration: InputDecoration(hintText: 'Enter frequency in seconds'),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Handle the new frequency value here
+                            // You can save it to the state, send to the server, etc.
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Continue'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onPressed;
+
+  SettingsButton({required this.label, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(double.infinity, 50),
+        ),
+        onPressed: onPressed,
+        child: Text(label),
+      ),
+    );
+  }
+}
+
+class UnitPreference extends StatelessWidget {
+  final String label;
+  final List<String> options;
+  final String selectedOption;
+
+  UnitPreference({required this.label, required this.options, required this.selectedOption});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.blue,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+            DropdownButton<String>(
+              value: selectedOption,
+              dropdownColor: Colors.blue,
+              icon: Icon(Icons.arrow_downward, color: Colors.white),
+              iconSize: 24,
+              elevation: 16,
+              style: TextStyle(color: Colors.white),
+              underline: Container(
+                height: 2,
+                color: Colors.white,
+              ),
+              onChanged: (String? newValue) {
+                // Handle the new value here (e.g., update state, send to server)
+              },
+              items: options.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WifiSettingsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text('Connect to WiFi'),
+        centerTitle: true, // Center the title
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue), // WiFi connection status
+          Icon(Icons.bluetooth, color: Colors.blue), // Bluetooth connection status
+          Icon(Icons.cloud, color: Colors.white), // Server connection status
+          IconButton(
+            icon: Icon(Icons.menu, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainMenuScreen()),
+              );
+            },
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.home, size: 30),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: 10, // Example count of available networks
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('Network $index', style: TextStyle(color: Colors.white)),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  String password = '';
+                  return AlertDialog(
+                    title: Text('Enter Password for Network $index'),
+                    content: TextField(
+                      obscureText: true,
+                      onChanged: (value) {
+                        password = value;
+                      },
+                      decoration: InputDecoration(hintText: 'Password'),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Handle the WiFi connection logic here with the entered password
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Continue'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class BluetoothSettingsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text('Connect to Bluetooth'),
+        centerTitle: true, // Center the title
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue), // WiFi connection status
+          Icon(Icons.bluetooth, color: Colors.blue), // Bluetooth connection status
+          Icon(Icons.cloud, color: Colors.white), // Server connection status
+          IconButton(
+            icon: Icon(Icons.menu, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainMenuScreen()),
+              );
+            },
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.home, size: 30),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: 10, // Example count of available Bluetooth devices
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text('Device $index', style: TextStyle(color: Colors.white)),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  String password = '';
+                  return AlertDialog(
+                    title: Text('Enter Password for Device $index'),
+                    content: TextField(
+                      obscureText: true,
+                      onChanged: (value) {
+                        password = value;
+                      },
+                      decoration: InputDecoration(hintText: 'Password'),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Handle the Bluetooth connection logic here with the entered password
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Continue'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CalibrationRecordsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text('Calibration Records'),
+        centerTitle: true, // Center the title
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue), // WiFi connection status
+          Icon(Icons.bluetooth, color: Colors.blue), // Bluetooth connection status
+          Icon(Icons.cloud, color: Colors.white), // Server connection status
+          IconButton(
+            icon: Icon(Icons.menu, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainMenuScreen()),
+              );
+            },
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.home, size: 30),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            MenuButton(
+              label: 'pH Calibrations',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CalibrationDataScreen(
+                    title: 'pH Calibration Records',
+                    columns: ['Cal. Date', 'Cal. Time', 'pH 4 mV', 'pH 7 mV', '% Slope 1', 'pH 10 mV', '% Slope 2'],
+                    data: [], // Replace with actual data
+                  )),
+                );
+              },
+            ),
+            MenuButton(
+              label: 'ORP Calibrations',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CalibrationDataScreen(
+                    title: 'ORP Calibration Records',
+                    columns: ['Cal. Date', 'Cal. Time', 'Cal. Sol. mV', 'mV Read', 'Offset'],
+                    data: [], // Replace with actual data
+                  )),
+                );
+              },
+            ),
+            MenuButton(
+              label: 'Temperature Calibrations',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CalibrationDataScreen(
+                    title: 'Temperature Calibration Records',
+                    columns: ['Cal. Date', 'Cal. Time', 'Temp. Reading', 'Reference'],
+                    data: [], // Replace with actual data
+                  )),
+                );
+              },
+            ),
+            MenuButton(
+              label: 'Feed Calibrations',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CalibrationDataScreen(
+                    title: 'Feed Calibration Records',
+                    columns: ['Cal. Date', 'Cal. Time', 'Cal. Volume', 'Measured volume', 'Pump Speed'],
+                    data: [], // Replace with actual data
+                  )),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CalibrationDataScreen extends StatelessWidget {
+  final String title;
+  final List<String> columns;
+  final List<List<String>> data;
+
+  CalibrationDataScreen({required this.title, required this.columns, required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black, // Set background color to black
+      appBar: AppBar(
+        title: Text(title),
+        centerTitle: true, // Center the title
+        actions: [
+          Icon(Icons.wifi, color: Colors.blue), // WiFi connection status
+          Icon(Icons.bluetooth, color: Colors.blue), // Bluetooth connection status
+          Icon(Icons.cloud, color: Colors.white), // Server connection status
+          IconButton(
+            icon: Icon(Icons.menu, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MainMenuScreen()),
+              );
+            },
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.home, size: 30),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // Implement filtering logic here
+              },
+              child: Text('Filter'),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: columns.map((column) => DataColumn(label: Text(column, style: TextStyle(color: Colors.white)))).toList(),
+                  rows: data.map((row) {
+                    return DataRow(
+                      cells: row.map((cell) => DataCell(Text(cell, style: TextStyle(color: Colors.white)))).toList(),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
